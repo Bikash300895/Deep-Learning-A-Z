@@ -13,6 +13,10 @@ classifier.add(Conv2D(32, (3, 3), input_shape=(64, 64, 3), activation='relu'))
 # Step 2 - Polling
 classifier.add(MaxPooling2D(pool_size=(2, 2)))
 
+# Adding second conv layer
+classifier.add(Conv2D(32, (3, 3), activation='relu')) # here we dont need shape, it already know
+classifier.add(MaxPooling2D(pool_size=(2, 2)))
+
 # Step 3 - Flattening
 classifier.add(Flatten())
 
@@ -48,7 +52,7 @@ test_set = test_datagen.flow_from_directory(
 classifier.fit_generator(
         training_set,
         steps_per_epoch=8000,
-        epochs=25,
+        epochs=20,
         validation_data=test_set,
         validation_steps=2000)
 
