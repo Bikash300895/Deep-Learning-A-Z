@@ -49,7 +49,57 @@ classifier = Sequential()
 
 # 2. Add the first hidden layer
 # as a rule of thumb we will take the dimension as (input_dim + output_dim)/2
+classifier.add(Dense(units=6, kernel_initializer='uniform', activation='relu', input_shape=(11,)))
+
+# Add second hidden layer
 classifier.add(Dense(units=6, kernel_initializer='uniform', activation='relu'))
+
+# Add the output layer
+classifier.add(Dense(units=1, kernel_initializer='uniform', activation='sigmoid'))
+
+
+# 3. Compile the neural network
+classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# 4. Finally fit data train data to train the model
+classifier.fit(X_train, y_trian, batch_size=10, epochs=100)
+
+"""Step 3: Evaluating the model"""
+y_pred = classifier.predict(X_test)
+y_pred = (y_pred>0.5)
+
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+
+
+
+"""" Step 4: Tuning the ANN """
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import GridSearchCV
+
+def build_classifier(optimizer):
+     classifier = Sequential()
+     classifier.add(Dense(units=6, kernel_initializer='uniform', activation='relu', input_shape=(11,)))
+     classifier.add(Dense(units=6, kernel_initializer='uniform', activation='relu'))
+     classifier.add(Dense(units=1, kernel_initializer='uniform', activation='sigmoid'))
+     classifier.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+     return classifier
+
+classifier = KerasClassifier(build_fn = build_classifier)
+parameters = {
+            'batch_size':[25, 32],
+            'epochs': [100, 500],
+            'optimizer' : ['adam', 'rmsprop']
+        }
+grid_search = GridSearchCV(estimator = classifier, param_grid = parameters, scoring = 'accuracy', cv = 10)
+grid_search = grid_search.fit(X_train, y_trian)
+best_parameters = grid_search.best_params_
+best_accuracy = grid_search.best_score_
+
+
 
 
 
