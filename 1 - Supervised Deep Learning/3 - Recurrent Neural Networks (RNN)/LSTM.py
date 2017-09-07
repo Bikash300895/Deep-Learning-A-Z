@@ -18,3 +18,10 @@ y_train = training_set[1:1258]
 
 # Reshape
 X_train = np.reshape(X_train, (1257, 1, 1))
+
+# Part 2: Building the RNN
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
+
+# Initializing the RNN
