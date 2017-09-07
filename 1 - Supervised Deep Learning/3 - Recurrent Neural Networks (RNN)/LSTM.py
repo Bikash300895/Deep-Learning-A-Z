@@ -25,3 +25,30 @@ from keras.layers import Dense
 from keras.layers import LSTM
 
 # Initializing the RNN
+regressor = Sequential()
+regressor.add(LSTM(units=4, activation='sigmoid', input_shape=(None, 1)))
+
+# adding the output layer
+regressor.add(Dense(units=1))
+
+# Compile the RNN
+regressor.compile(optimizer='adam', loss = 'mean_squared_error')
+
+regressor.fit(X_train, y_train, batch_size=32, epochs=200)
+
+
+# Part 3 : Making the prediction
+test_set = pd.read_csv('Google_Stock_Price_Test.csv')
+real_stock_price = test_set.iloc[:,1:2].values
+
+# Getting the predicted price
+inputs = real_stock_price
+inputs = sc.transform(inputs)
+inputs = np.reshape(inputs, (20, 1, 1))
+
+predicted_stock_price = regressor.predict(inputs)
+predicted_stock_price = sc.inverse_transform(predicted_stock_price)
+
+
+# Visualize the results
+
